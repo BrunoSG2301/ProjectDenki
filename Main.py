@@ -9,7 +9,7 @@ from gpiozero import Button
 from time import sleep
 from Media_player import Media_player as MP
 from edge_impulse_linux.audio import AudioImpulseRunner
-aion = Button(2)
+aion = Button(18)
 runner = None
 
 def signal_handler(sig, frame):
