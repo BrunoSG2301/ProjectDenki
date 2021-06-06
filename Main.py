@@ -82,7 +82,7 @@ def main(argv):
                     
                     if state == "on":
                         if cmd == "play music":
-                            MP("play", None, None)
+                            MP("control","play", None)
                         if cmd == "pause":
                             MP("control","ps", None)
                         if cmd == "next":
