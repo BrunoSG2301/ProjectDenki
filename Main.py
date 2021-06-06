@@ -47,9 +47,11 @@ def main(argv):
 
     with AudioImpulseRunner(modelfile) as runner:
         try:
+            debounce = 1
             prev_cmd = ""
             cmd = ""
             state = "off"
+            auto_nxt = False
             model_info = runner.init()
             labels = model_info['model_parameters']['labels']
             print('Loaded runner for "' + model_info['project']['owner'] + ' / ' + model_info['project']['name'] + '"')
@@ -60,7 +62,7 @@ def main(argv):
                 selected_device_id=int(args[1])
                 print("Device ID "+ str(selected_device_id) + " has been provided as an argument.")
 
-            for res, audio in runner.classifier(device_id=selected_device_id):    
+            for res, audio in runner.classifier(device_id=selected_device_id):
                 if aion.is_pressed:
                     command = []
                     keys = []
@@ -71,31 +73,46 @@ def main(argv):
                         keys.append(score)
                     cmd = command[keys.index(max(keys))]
                     if cmd != prev_cmd:
-                        print('Result (%d ms.) ' % (res['timing']['dsp'] + res['timing']['classification']), end='')
-                        print('%s: %.2f\t' % (cmd,max(keys)),end='')
-                        print(state, end='')
-                        print('', flush=True)
-                    if cmd == "call":
-                        state = "on"
-                    elif cmd == "bye":
-                        state = "off"
+                        debounce -=1
+                        if debounce == 0:
+                            if cmd == "call":
+                                state = "on"
+                            elif cmd == "bye":
+                                state = "off"
                     
-                    if state == "on":
-                        if cmd == "play music":
-                            MP("control","play", None)
-                        if cmd == "pause":
-                            MP("control","ps", None)
-                        if cmd == "next":
-                            MP("control","nxt", None)
-                        if cmd == "prev":
-                            MP("control","prv", None)
-                        if cmd == "rewind":
-                            MP("control","rew", None)
-                        if cmd == "stop":
-                            MP("control","stp", None)
+                            if state == "on":
+                                if cmd == "play music":
+                                    MP("control","play", None)
+                                    auto_nxt = True
+                                    if pygame.mixer.music.get_busy():
+                                        pass
+                                    else:
+                                        state = "off"
+                                elif cmd == "pause":
+                                    MP("control","ps", None)
+                                    state = "off"
+                                elif cmd == "next":
+                                    MP("control","nxt", None)
+                                    state = "off"
+                                elif cmd == "prev":
+                                    MP("control","prv", None)
+                                    state = "off"
+                                elif cmd == "rewind":
+                                    MP("control","rew", None)
+                                    state = "off"
+                                elif cmd == "stop":
+                                    MP("control","stp", None)
+                                    state = "off"
+                            print('Result (%d ms.) ' % (res['timing']['dsp'] + res['timing']['classification']), end='')
+                            print(cmd)
+                            print('%.2f\t' % (max(keys)),end='')
+                            print(state, end='')
+                            print('', flush=True)
+                            debounce = 3
                 else:
                     print("AI off")
-
+                if pygame.mixer.music.get_busy() == False and auto_nxt == True:
+                        MP("control","nxt", None)
         finally:
             if (runner):
                 runner.stop()
