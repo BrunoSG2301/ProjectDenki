@@ -5,6 +5,8 @@ import time
 import pygame
 import os
 import pyttsx3
+from DT import DT, DT_voice
+from datetime import date
 from Weather import Weather , Weather_voice
 from RPi import GPIO
 from gpiozero import Button
@@ -128,10 +130,8 @@ def main(argv):
                                 print(Weather())
                                 state = "off"
                             elif cmd == "date":
-                                engine.say('Its 6 pm with 23 minutes')
-                                engine.runAndWait()
-                                engine.say('Today is June 06 on year 2021')
-                                engine.runAndWait()
+                                DT_voice()
+                                print(DT())
                                 state = "off"
                         
                         print('Result (%d ms.) ' % (res['timing']['dsp'] + res['timing']['classification']), end='')
