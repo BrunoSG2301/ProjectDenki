@@ -1,3 +1,5 @@
+import serial
+import time 
 import os
 import sys, getopt
 import signal
@@ -143,6 +145,33 @@ def main(argv):
                 else:
                     print("AI off")
                     state = "off"
+                    #nombre del dispositivo serial: dsmesg | grep -v disconnect | grep -Eo "tty(ACM|USB)." |tail -1
+                    portSerial =  serial.Serial('/dev/ttyACM0',9600)
+                    portSerial.flushInput()
+                    while True:
+                        try:
+                            dataInput = portSerial.readline()
+                            dataBus = dataInput.decode('latin-1').strip() # decodifica el valor para poder ser leid
+                            print(dataBus)
+                            time.sleep(0.5)
+                            if dataBus == "stop":
+                                MP("control","stp", None)
+                            elif dataBus == "play":
+                                MP("control","play", None)
+                            elif dataBus == "pause":
+                                MP("control","ps", None)
+                            elif dataBus == "rewind":
+                                MP("control","rew", None)  
+                            elif dataBus == "next":
+                                MP("control","nxt", None)
+                            elif dataBus == "preview":
+                                MP("control","prv", None)
+                            elif dataBus == "random":
+                                MP("control","random", None)
+                        except KeyboardInterrupt:
+                            print("\n Interrupt by Ctrl+C")
+                            break
+                    
                 if pygame.mixer.music.get_busy() == False and auto_nxt == True:
                         MP("control","nxt", None)
         finally:
