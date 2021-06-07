@@ -91,10 +91,10 @@ def Media_player(c_type, command, info):
             pygame.mixer.music.play()
         #Obtener canción actual
         elif command == "gs":
-            return slist[song]
+            return mainlist.index(slist[song])
         #Obtener lista actual
         elif command == "gl":
-            return playlists[current_lst]
+            return current_lst
             
             
             
