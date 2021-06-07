@@ -17,16 +17,23 @@ import random
 #Se define la función Media_player que recibe 3 argumentos Media_player(<tipo de comando>,<comando>,<información en caso de requerirla>)
 def Media_player(c_type, command, info):
 #La función emplea las variables globales "songs" que es la lista de reproducción y "song" que es un iterador del número de lista de la canción.
-    global slist, song, mainlist
+    global slist, song, mainlist, playlists, current_lst
 #El tipo de comando "init" es para inicializar el reproductor (Siempre se debe utilizar una vez al inicio del código) al usar este tipo de cmando, los otros 2 argumentos sería None   
     if c_type == "init":
         slist = []
+        playlists = []
         song = 0
+        current_lst = 0
         for fileName in os.listdir(r'Songs/'):
             slist.append(fileName)
         slist = sorted(slist, key=str.lower)
         mainlist = slist
         print(slist)
+        for lst in os.listdir(r'Lists/'):
+            playlists.append(lst[0:-4])
+        playlists = sorted(playlists, key=str.lower)
+        playlists.insert(0,"mainlist")
+        print(playlists)
         pygame.mixer.init()
         pygame.mixer.music.load('Songs/'+slist[song])
 # El tipo de comando "control" sirve para gestionar la reporducción con comandos: play, pausa(ps), stop(stp), volumen (vup,vdwn), rewind(rew), siguiente/anterior(nxt,prv)
@@ -78,9 +85,16 @@ def Media_player(c_type, command, info):
             random.shuffle(slist)
             print(slist)
             song = 0
+            current_lst = 0
             pygame.mixer.music.stop()
             pygame.mixer.music.load('Songs/'+slist[song])
             pygame.mixer.music.play()
+        #Obtener canción actual
+        elif command == "gs":
+            return slist[song]
+        #Obtener lista actual
+        elif command == "gl":
+            return playlists[current_lst]
             
             
             
@@ -89,19 +103,35 @@ def Media_player(c_type, command, info):
     if c_type == "list":
         #Editar/crear lista
         if command == "edlst":
-            with open(info+".txt", "w") as file:
+            with open("Lists/"+info+".txt", "w") as file:
                 file.write(info+' ')
+            playlists = []
+            for lst in os.listdir(r'Lists/'):
+                playlists.append(lst[0:-4])
+            playlists = sorted(playlists, key=str.lower)
+            playlists.insert(0,"mainlist")
+            current_lst = playlists.index(info)
+            print(playlists)
+            print(current_lst)
+            
         #Eliminar lista      
         if command == "dellst":
-            if os.path.exists(info+".txt"):
-                os.remove(info+".txt")
+            if os.path.exists("Lists/"+info+".txt"):
+                os.remove("Lists/"+info+".txt")
+            playlists = []
+            for lst in os.listdir(r'Lists/'):
+                playlists.append(lst[0:-4])
+            playlists = sorted(playlists, key=str.lower)
+            playlists.insert(0,"mainlist")
+            current_lst = 0
+            print(playlists)
         #Añadir canción a la lista  
         if command == "add2lst":
             txtdata = []
-            with open(info[0]+".txt","r") as file:
+            with open("Lists/"+info[0]+".txt","r") as file:
                 for i in file:
                     txtdata.append(i[0:-1]) 
-            with open(info[0]+".txt", "w") as file:
+            with open("Lists/"+info[0]+".txt", "w") as file:
                 for i in txtdata:
                     if i != info[1]:
                         file.write(i+"\n")
@@ -109,10 +139,10 @@ def Media_player(c_type, command, info):
         #Remover canción de la lista       
         if command == "rmvlst":
             txtdata = []
-            with open(info[0]+".txt","r") as file:
+            with open("Lists/"+info[0]+".txt","r") as file:
                 for i in file:
                     txtdata.append(i[0:-1]) 
-            with open(info[0]+".txt", "w") as file:
+            with open("Lists/"+info[0]+".txt", "w") as file:
                 for i in txtdata:
                     if i != info[1]:
                         file.write(i+"\n")
@@ -122,25 +152,36 @@ def Media_player(c_type, command, info):
                 pass
             else:
                 slist = mainlist
+                current_lst = 0
             print(slist)
             song = slist.index(info)
             pygame.mixer.music.stop()
             pygame.mixer.music.load('Songs/'+info)
             pygame.mixer.music.play()
             
-        #Reproducir una lista
+        #Reproducir una lista Media_player("list","plist",indice de lista)
         if command == "plist":
-            slist = []
-            song = 0
-            with open(info+".txt","r") as file:
-                for i in file:
-                    if i[0:-1] != info:
-                        slist.append(i[0:-1])
-            print(slist)
-            pygame.mixer.music.stop()
-            pygame.mixer.music.load('Songs/'+slist[song])
-            pygame.mixer.music.play()
-            
+            try:
+                current_lst = info
+                info = playlists[info]
+                slist = []
+                song = 0
+                with open("Lists/"+info+".txt","r") as file:
+                    for i in file:
+                        if i[0:-1] != info:
+                            slist.append(i[0:-1])
+                print(slist)
+                pygame.mixer.music.stop()
+                pygame.mixer.music.load('Songs/'+slist[song])
+                pygame.mixer.music.play()
+            except:
+                slist = mainlist
+                current_lst = 0
+                slist = mainlist
+                song = 0
+                pygame.mixer.music.stop()
+                pygame.mixer.music.load('Songs/'+slist[song])
+                pygame.mixer.music.play()
     return None
 
 
