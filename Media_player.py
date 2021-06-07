@@ -13,6 +13,7 @@ Carlos Antonio Buendía Lopez
 #Se importan las librerias necearias 
 import pygame
 import os
+import random
 #Se define la función Media_player que recibe 3 argumentos Media_player(<tipo de comando>,<comando>,<información en caso de requerirla>)
 def Media_player(c_type, command, info):
 #La función emplea las variables globales "songs" que es la lista de reproducción y "song" que es un iterador del número de lista de la canción.
@@ -70,6 +71,17 @@ def Media_player(c_type, command, info):
                 song -=1
             pygame.mixer.music.load('Songs/'+slist[song])
             pygame.mixer.music.play()
+            
+        #Canción aleatoria
+        elif command == "random":
+            slist = mainlist
+            random.shuffle(slist)
+            print(slist)
+            song = 0
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load('Songs/'+slist[song])
+            pygame.mixer.music.play()
+            
             
             
             
