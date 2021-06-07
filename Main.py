@@ -5,6 +5,7 @@ import time
 import pygame
 import os
 import pyttsx3
+from Weather import Weather , Weather_voice
 from RPi import GPIO
 from gpiozero import Button
 from time import sleep
@@ -123,10 +124,8 @@ def main(argv):
                                 MP("list","plist", "Relax")
                                 state = "off"
                             elif cmd == "weather":
-                                engine.say('The weather today is nice')
-                                engine.runAndWait()
-                                engine.say('The temperature is 23 degrees and its sunny')
-                                engine.runAndWait()
+                                Weather_voice()
+                                print(Weather())
                                 state = "off"
                             elif cmd == "date":
                                 engine.say('Its 6 pm with 23 minutes')
