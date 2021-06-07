@@ -108,32 +108,40 @@ def main(argv):
                                 MP("control","stp", None)
                                 state = "off"
                             elif cmd == "bye":
-                                pygame.mixer.music.set_volume(pygame.mixer.music.get_volume()//2)
+                                pygame.mixer.music.set_volume(pygame.mixer.music.get_volume()/2)
                                 engine.say('Goodbye, See you later')
                                 engine.runAndWait()
                                 state = "off"
-                                pygame.mixer.music.set_volume((pygame.mixer.music.get_volume()+1)*2)
+                                pygame.mixer.music.set_volume((pygame.mixer.music.get_volume()+0.1)*2)
                             elif cmd == "sad":
+                                pygame.mixer.music.set_volume(pygame.mixer.music.get_volume()/2)
                                 engine.say('Im sorry to hear that')
                                 engine.runAndWait()
                                 engine.say('Hope this cheers you up')
                                 engine.runAndWait()
                                 MP("list","plist", "Joy")
+                                pygame.mixer.music.set_volume((pygame.mixer.music.get_volume()+0.1)*2)
                                 state = "off"
                             elif cmd == "relax":
-                                engine.say('Im sorry to hear that')
+                                pygame.mixer.music.set_volume(pygame.mixer.music.get_volume()/2)
+                                engine.say('You need to calm down')
                                 engine.runAndWait()
-                                engine.say('Hope this cheers you up')
+                                engine.say('Hope this could help')
                                 engine.runAndWait()
                                 MP("list","plist", "Relax")
+                                pygame.mixer.music.set_volume((pygame.mixer.music.get_volume()+0.1)*2)
                                 state = "off"
                             elif cmd == "weather":
+                                pygame.mixer.music.set_volume(pygame.mixer.music.get_volume()/2)
                                 Weather_voice()
                                 print(Weather())
+                                pygame.mixer.music.set_volume((pygame.mixer.music.get_volume()+0.1)*2)
                                 state = "off"
                             elif cmd == "date":
+                                pygame.mixer.music.set_volume(pygame.mixer.music.get_volume()/2)
                                 DT_voice()
                                 print(DT())
+                                pygame.mixer.music.set_volume((pygame.mixer.music.get_volume()+0.1)*2)
                                 state = "off"
                         
                         print('Result (%d ms.) ' % (res['timing']['dsp'] + res['timing']['classification']), end='')

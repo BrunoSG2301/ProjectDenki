@@ -161,6 +161,10 @@ def Media_player(c_type, command, info):
             
         #Reproducir una lista Media_player("list","plist",indice de lista)
         if command == "plist":
+            if info == "Relax":
+                info = playlists.index("Relax")
+            if info == "Joy":
+                info = playlists.index("Joy")
             try:
                 current_lst = info
                 info = playlists[info]
