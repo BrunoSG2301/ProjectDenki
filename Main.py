@@ -164,18 +164,33 @@ def main(argv):
                             time.sleep(0.5)
                             if dataBus == "stop":
                                 MP("control","stp", None)
+                                actualSong = MP("control","gs", None).encode('latin-1')
+                                portSerial.write(actualSong)
+                                
                             elif dataBus == "play":
                                 MP("control","play", None)
+                                actualSong = MP("control","gs", None).encode('latin-1')
+                                portSerial.write(actualSong)
                             elif dataBus == "pause":
                                 MP("control","ps", None)
+                                actualSong = MP("control","gs", None).encode('latin-1')
+                                portSerial.write(actualSong)
                             elif dataBus == "rewind":
                                 MP("control","rew", None)  
+                                actualSong = MP("control","gs", None).encode('latin-1')
+                                portSerial.write(actualSong)
                             elif dataBus == "next":
                                 MP("control","nxt", None)
+                                actualSong = MP("control","gs", None).encode('latin-1')
+                                portSerial.write(actualSong)
                             elif dataBus == "preview":
                                 MP("control","prv", None)
+                                actualSong = MP("control","gs", None).encode('latin-1')
+                                portSerial.write(actualSong)
                             elif dataBus == "random":
                                 MP("control","random", None)
+                                actualSong = MP("control","gs", None).encode('latin-1')
+                                portSerial.write(actualSong)
                         except KeyboardInterrupt:
                             print("\n Interrupt by Ctrl+C")
                             break
