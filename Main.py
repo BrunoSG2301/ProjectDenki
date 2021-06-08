@@ -191,6 +191,12 @@ def main(argv):
                                 MP("control","random", None)
                                 actualSong = MP("control","gs", None).encode('latin-1')
                                 portSerial.write(actualSong)
+                            elif dataBus == "random":
+                                MP("control","random", None)
+                                actualSong = MP("control","gs", None).encode('latin-1')
+                                portSerial.write(actualSong)
+                            else:
+                                pass
                         except KeyboardInterrupt:
                             print("\n Interrupt by Ctrl+C")
                             break
